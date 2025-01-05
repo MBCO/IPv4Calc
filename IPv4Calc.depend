@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1735746015 source:/home/master/Source/IPv4Calc/main.cpp
+	<iostream>
+	<bits/stdc++.h>
+	<regex>
+	<string>
+
