@@ -106,17 +106,23 @@ string calculateMaskDecvalue(int& IPv4BitMask)
 int CalcNewMaskSubnets(int NumberOf, int IPv4BitMask, string& IPv4Maskstr, bool SubOrHost)
 {
 
-    double result = log(NumberOf) / log(2);
     if (SubOrHost) //true ist about subnets
     {
+        double result = log(NumberOf) / log(2);
         IPv4BitMask = IPv4BitMask + (int)ceil(result);
+        if (IPv4BitMask > 32) {return 0;}
     }
     else //false its about hotst
     {
-        IPv4BitMask = 32 - (int)ceil(result);
+        double result = log(NumberOf+2) / log(2); //one for broadcast and one for network
+        int Newmask = 32 - (int)ceil(result);
+        if (IPv4BitMask <=Newmask )
+        {
+            IPv4BitMask = Newmask;
+        } else { return 0;}
     }
 
-    if (IPv4BitMask > 32) {return 0;}
+    //if (IPv4BitMask > 32) {return 0;}
 
     int BitMasktoDecMask = IPv4BitMask;
     IPv4Maskstr="";
@@ -143,7 +149,7 @@ int main(int argc, char* argv[])
     if (argc<2)
     {
         cout << "usage"<<endl;
-        cout << "IPv4Calc -ip IPADRESS -m MASK"<<endl;
+        cout << "IPv4Calc -ip IPADRESS -m MASK -subnet NUMBEROFSUBNETS -hosts _NUMBEROFHOSTS"<<endl;
         return 1;
     }
     string IPv4;
@@ -229,10 +235,10 @@ int main(int argc, char* argv[])
                 std::cerr << "Error: out of range" << std::endl;
                 return 1;
             }
-            NumberOfSubnets=CalcNewMaskSubnets(NumberOfSubnets, IPv4BitMask, IPv4Maskstr, false);
+            NumberOfSubnets=CalcNewMaskSubnets(NumberOfHosts, IPv4BitMask, IPv4Maskstr, false);
             if (NumberOfSubnets <= 0)
             {
-                cout << "to many subnets" << endl;
+                cout << "to many hosts" << endl;
                 return 1;
             } else
             {
